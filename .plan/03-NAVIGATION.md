@@ -152,6 +152,7 @@ import com.opencloudgaming.opennow.ui.screens.login.LoginScreen
 import com.opencloudgaming.opennow.ui.screens.settings.SettingsScreen
 import com.opencloudgaming.opennow.ui.screens.stream.StreamScreen
 import com.opencloudgaming.opennow.ui.theme.PhoneNavRailMaxSmallestWidth
+import com.opencloudgaming.opennow.ui.screens.login.LoadingScreen
 
 @Composable
 fun AppNavigation(viewModel: OpenNowViewModel) {
@@ -160,7 +161,7 @@ fun AppNavigation(viewModel: OpenNowViewModel) {
     val tvProfile = state.codecReport?.androidTvProfile == true
 
     if (state.initializing) {
-        com.opencloudgaming.opennow.ui.screens.login.LoadingScreen(state.launchPhase.ifBlank { "Starting OpenNOW" })
+        LoadingScreen(state.launchPhase.ifBlank { "Starting OpenNOW" })
         return
     }
 
@@ -262,10 +263,6 @@ fun AppNavigation(viewModel: OpenNowViewModel) {
 }
 
 private fun navigateToRoute(navController: NavHostController, route: Route) {
-    val currentRoute = navController.currentBackStackEntry?.destination?.route
-    val targetRoute = route::class.qualifiedName ?: return
-    if (currentRoute?.contains(targetRoute.substringAfterLast('.')) == true) return
-
     navController.navigate(route) {
         popUpTo(Route.Home) { saveState = true }
         launchSingleTop = true

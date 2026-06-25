@@ -185,19 +185,20 @@ import kotlin.math.min
 import kotlin.math.floor
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
-
-private val Green = Color(0xff6af0a0)
-private val Background = Color(0xff090b0d)
-private val Panel = Color(0xff11161a)
-private val PanelAlt = Color(0xff171d22)
-private val TextPrimary = Color(0xffeef3f5)
-private val TextMuted = Color(0xff98a4aa)
-private val SettingsBackground = Color(0xff090b0d)
-private val SettingsPanel = Color(0xff11161a)
-private val SettingsPanelAlt = Color(0xff171d22)
-private val SettingsText = Color(0xffeef3f5)
-private val SettingsTextMuted = Color(0xff98a4aa)
-private val PHONE_NAV_RAIL_MAX_SMALLEST_WIDTH = 600.dp
+import com.opencloudgaming.opennow.ui.theme.OpenNowTheme
+import com.opencloudgaming.opennow.ui.theme.Background
+import com.opencloudgaming.opennow.ui.theme.Panel
+import com.opencloudgaming.opennow.ui.theme.PanelAlt
+import com.opencloudgaming.opennow.ui.theme.TextPrimary
+import com.opencloudgaming.opennow.ui.theme.TextMuted
+import com.opencloudgaming.opennow.ui.theme.SettingsBackground
+import com.opencloudgaming.opennow.ui.theme.SettingsPanel
+import com.opencloudgaming.opennow.ui.theme.SettingsPanelAlt
+import com.opencloudgaming.opennow.ui.theme.SettingsText
+import com.opencloudgaming.opennow.ui.theme.SettingsTextMuted
+import com.opencloudgaming.opennow.ui.theme.color
+import com.opencloudgaming.opennow.ui.theme.uiAccentLabel
+import com.opencloudgaming.opennow.ui.theme.PhoneNavRailMaxSmallestWidth
 
 private data class SettingsChoiceOption(val value: String, val label: String)
 private data class ChoiceMenuOption(
@@ -265,51 +266,6 @@ private val gameLanguageOptions = listOf(
     SettingsChoiceOption("fi_FI", "Finnish"),
     SettingsChoiceOption("no_NO", "Norwegian"),
 )
-private val UiAccent.color: Color
-    get() = when (this) {
-        UiAccent.OpenNow -> Green
-        UiAccent.Pixel -> Color(0xff8ab4f8)
-        UiAccent.HotPink -> Color(0xffff4fb8)
-        UiAccent.Lime -> Color(0xffc7ef6b)
-        UiAccent.Coral -> Color(0xffff8d7a)
-        UiAccent.Violet -> Color(0xffc7a4ff)
-    }
-
-@Composable
-private fun uiAccentLabel(accent: UiAccent): String = when (accent) {
-    UiAccent.OpenNow -> stringResource(R.string.accent_opennow)
-    UiAccent.Pixel -> stringResource(R.string.accent_pixel)
-    UiAccent.HotPink -> stringResource(R.string.accent_hot_pink)
-    UiAccent.Lime -> stringResource(R.string.accent_lime)
-    UiAccent.Coral -> stringResource(R.string.accent_coral)
-    UiAccent.Violet -> stringResource(R.string.accent_violet)
-}
-
-@Composable
-fun OpenNowTheme(settings: AppSettings, content: @Composable () -> Unit) {
-    val context = LocalContext.current
-    val accent = settings.uiAccent.color
-    val fallbackScheme = darkColorScheme(
-        primary = accent,
-        onPrimary = Color(0xff08090c),
-        background = Background,
-        surface = Panel,
-        surfaceVariant = PanelAlt,
-        onBackground = TextPrimary,
-        onSurface = TextPrimary,
-        onSurfaceVariant = TextMuted,
-    )
-    val colorScheme = if (settings.dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        dynamicDarkColorScheme(context)
-    } else {
-        fallbackScheme
-    }
-    MaterialTheme(
-        colorScheme = colorScheme,
-        content = content,
-    )
-}
-
 @Composable
 fun OpenNowApp(viewModel: OpenNowViewModel) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -625,10 +581,10 @@ private fun secondsUntil(deadlineMs: Long): Int =
     ((deadlineMs - System.currentTimeMillis()).coerceAtLeast(0L) / 1000L).toInt()
 
 private fun isPhoneLandscape(width: androidx.compose.ui.unit.Dp, height: androidx.compose.ui.unit.Dp): Boolean =
-    width > height && minOf(width, height) < PHONE_NAV_RAIL_MAX_SMALLEST_WIDTH
+    width > height && minOf(width, height) < PhoneNavRailMaxSmallestWidth
 
 private fun isPhonePortrait(width: androidx.compose.ui.unit.Dp, height: androidx.compose.ui.unit.Dp): Boolean =
-    height >= width && minOf(width, height) < PHONE_NAV_RAIL_MAX_SMALLEST_WIDTH
+    height >= width && minOf(width, height) < PhoneNavRailMaxSmallestWidth
 
 @Composable
 private fun MainShell(state: OpenNowUiState, viewModel: OpenNowViewModel) {
@@ -1852,7 +1808,7 @@ private fun GameDetailsSheet(
             BoxWithConstraints(Modifier.fillMaxSize()) {
                 val aspect = if (maxHeight.value > 0f) maxWidth.value / maxHeight.value else 1f
                 val landscapeTvLayout = maxWidth >= 720.dp && aspect >= 1.35f
-                val phoneLandscapeLayout = landscapeTvLayout && minOf(maxWidth, maxHeight) < PHONE_NAV_RAIL_MAX_SMALLEST_WIDTH
+                val phoneLandscapeLayout = landscapeTvLayout && minOf(maxWidth, maxHeight) < PhoneNavRailMaxSmallestWidth
                 if (landscapeTvLayout) {
                     GameDetailsLandscapeContent(
                         game = game,

@@ -1,208 +1,167 @@
-# Orchestration Guide — 3-Tier Architecture
+# Orchestration Guide
 
-## How It Works
+## CRITICAL RULES — SUBAGENTS MUST FOLLOW
 
+### Rule 1: ALWAYS Use MCP Tools Before Writing Code
+
+Before writing ANY file, the subagent MUST:
+1. Use `android-docs_search_android_docs` to verify the API exists
+2. Use `android-docs_get_api_reference` to get exact class/function signatures
+3. Use `android-docs_get_release_notes` if using a specific library version
+
+**Why:** APIs change. Versions differ. Don't guess — verify.
+
+**Example:**
 ```
-Main Orchestrator (you)
-├── Reads: .plan/ORCHESTRATION.md (this file)
-├── Reads: .plan/00-CONTEXT.md (shared context: deps, gotchas, decisions)
-├── Spawns: Phase Orchestrators (one per phase, sequentially)
-│   ├── Reads: .plan/0N-PHASE_NAME.md (its phase plan only)
-│   ├── Spawns: Subagents (one per file/task)
-│   │   └── Reads: single file creation/edit task
-│   └── Returns: build verification result
-└── Verifies: build passes after each phase
-```
+# Before writing Coil 3 code:
+android-docs_search_android_docs("coil3 compose AsyncImage")
+android-docs_get_api_reference("coil3.compose.AsyncImage")
 
-## Main Orchestrator Instructions
+# Before writing Navigation Compose:
+android-docs_search_android_docs("navigation compose NavHost")
+android-docs_get_api_reference("androidx.navigation.compose.NavHost")
 
-You are the main orchestrator. Your job:
-
-1. Read this file (ORCHESTRATION.md)
-2. Read `.plan/00-CONTEXT.md` for shared project context
-3. For each phase (1, 2, 3, 4a, 4b, 4c, 5, 6, 7):
-   a. Spawn a **Phase Orchestrator** with the phase plan
-   b. Wait for it to complete
-   c. Commit the phase changes
-   d. Push to trigger CI
-   e. Run `gh run watch` — wait for CI to finish
-   f. If CI fails, run `gh run view --log-failed`, fix the issue, commit, push, watch again
-   g. Only proceed to next phase after CI passes
-4. Report final status
-
-### Spawning a Phase Orchestrator
-
-Use the Task tool with `subagent_type: general`. Pass:
-- The phase plan file content (from `.plan/0N-PHASE_NAME.md`)
-- The shared context (from `.plan/00-CONTEXT.md`)
-- A clear instruction: "Execute this phase. Create/edit the files specified. Do NOT run build commands."
-
-### Example Main Orchestrator Prompt
-
-```
-You are a Phase Orchestrator for Phase N: [PHASE NAME].
-
-SHARED CONTEXT:
-[paste contents of .plan/00-CONTEXT.md]
-
-YOUR PHASE PLAN:
-[paste contents of .plan/0N-PHASE_NAME.md]
-
-YOUR JOB:
-1. Read the phase plan above
-2. For each Step in the plan, spawn a Subagent to create/edit the file
-3. Wait for each subagent to complete before starting the next step
-4. Do NOT run build commands — the main orchestrator handles that
-5. Return a summary of what was created/edited
-
-SPAWN SUBAGENTS:
-- Use Task tool with subagent_type: "general"
-- Each subagent gets ONE file to create/edit
-- Pass the exact code from the plan to the subagent
-- Verify the subagent succeeded before moving on
+# Before writing ExposedDropdownMenuBox:
+android-docs_search_android_docs("material3 ExposedDropdownMenuBox")
+android-docs_get_api_reference("androidx.compose.material3.ExposedDropdownMenuBox")
 ```
 
-## Phase Orchestrator Instructions
+### Rule 2: NEVER Run Local Build/Compile
 
-You are a Phase Orchestrator. Your job:
+- **NO** `./gradlew`
+- **NO** `./gradlew assembleDebug`
+- **NO** `./gradlew compileDebugKotlin`
+- **NO** any gradle command at all
+- **ALL** builds go through CI: `git push → gh run watch`
+- If you need to verify something, use grep/read tools, not build commands
 
-1. Read the phase plan passed to you
-2. **Verify APIs using MCP** before spawning subagents — use `android-docs-mcp` to check API signatures
-3. For each Step in the plan:
-   a. Spawn a **Subagent** to create/edit the file
-   b. Wait for completion
-   c. If the subagent fails, read the error and retry or fix manually
-4. Return a summary: files created, files edited, any issues
+### Rule 3: ALWAYS Verify Before Writing
 
-### Spawning a Subagent
+For EVERY file the subagent creates:
+1. **Verify API exists** via MCP tools
+2. **Verify function signatures** match what callers expect
+3. **Verify imports** will resolve (check existing import patterns)
+4. **After writing**, run the grep checks from the phase plan
 
-Use the Task tool with `subagent_type: general`. Pass:
-- The exact file path to create/edit
-- The exact code content from the plan
-- Instructions: "Create this file with the exact content below. Do NOT run build commands."
+### Rule 4: Follow YAGNI / KISS Religiously
 
-### Example Phase Orchestrator Prompt
+**YAGNI — Don't build it unless you need it NOW:**
+- No generic components used once
+- No "reusable" abstractions for one use case
+- No extension functions for one call site
+- No sealed classes for 2 variants
+- No wrapper composables around a single widget
 
-```
-You are executing Phase 1: Design System + Theme.
+**KISS — The simplest solution that works:**
+- Copy-paste existing code, change package
+- Inline everything possible
+- No indirection layers
+- No "bridge" classes between old and new
+- No helper functions — write the composable directly
 
-YOUR STEPS:
-1. Create directory: app/src/main/java/com/opencloudgaming/opennow/ui/theme
-2. Create file: Color.kt with this content: [code]
-3. Create file: Type.kt with this content: [code]
-4. Create file: Shape.kt with this content: [code]
-5. Create file: Motion.kt with this content: [code]
-6. Create file: Theme.kt with this content: [code]
+**Concrete YAGNI violations to avoid:**
+- Creating a `GameCard` component used in one screen → inline it
+- Creating a `SearchBar` component used in two screens with different logic → inline both
+- Creating a `SettingsSection` wrapper → just use `Column` with spacing
+- Creating a `StreamControlSlider` for one slider → inline `Slider`
 
-For each step:
-- Spawn a subagent to create the file
-- Wait for completion
-- If it fails, fix it manually
-
-VERIFY APIs:
-- Use android-docs MCP to verify Material3 APIs before writing code
-- Use kotlin-ls LSP to catch compile errors after writing
-
-DO NOT run ./gradlew or any build commands.
-Return a summary when done.
-```
-
-## Subagent Instructions
-
-You are a Subagent. Your job:
-
-1. Read the file path and content passed to you
-2. Create the file at the specified path with the exact content
-3. If editing an existing file, make the specified edit
-4. Return success or error
-
-### Example Subagent Prompt
+## Workflow
 
 ```
-Create the file at this path:
-app/src/main/java/com/opencloudgaming/opennow/ui/theme/Color.kt
+Phase N:
+  1. Read phase plan (this file + phase-specific file)
+  2. For each file in the plan:
+     a. Use MCP to verify APIs
+     b. Spawn subagent with exact prompt from plan
+     c. Subagent writes file
+     d. Subagent runs verify grep commands
+     e. Subagent returns success
+  3. Commit → Push → gh run watch
+  4. If CI fails: gh run view --log-failed → fix → retry
+  5. ONLY proceed after CI passes
+```
 
-With this exact content:
-[code block]
+## Subagent Prompt Template
 
-VERIFY FIRST:
-- Use android-docs MCP to verify any Android/Compose APIs in the code
-- Check parameter names, return types, nullability
+When spawning a subagent for a file, use this template:
 
-DO NOT run any build commands.
-Return "Created [path]" on success.
+```
+You are writing a file for an Android Kotlin/Compose project.
+
+CRITICAL RULES:
+- Use android-docs_search_android_docs and android-docs_get_api_reference MCP tools to verify APIs BEFORE writing
+- Do NOT run any gradle/build commands
+- Do NOT add comments unless asked
+- Do NOT add error handling beyond what's specified
+- Do NOT add animations/transitions unless explicitly in the plan
+- Do NOT create helper functions — write composables directly
+- Follow YAGNI: if it's used once, inline it
+- Follow KISS: simplest solution that works
+
+YOUR TASK:
+[exact file path]
+[exact function to extract or create]
+[exact source lines to copy from]
+[exact package declaration]
+[exact imports needed]
+[exact function signatures (public/private)]
+
+VERIFY AFTER WRITING:
+[specific grep commands to run]
+
+Return SUCCESS with the grep results.
 ```
 
 ## Phase Order
 
-| Phase | Plan File | Description |
-|-------|-----------|-------------|
-| 1 | `.plan/01-THEME.md` | Design system: colors, typography, shapes, motion, theme |
-| 2 | `.plan/02-STATE.md` | State decomposition: AppState, AuthState, CatalogState, etc. |
-| 3 | `.plan/03-NAVIGATION.md` | Navigation: Routes, bars, scaffold, AppNavigation, MainActivity |
-| 4a | `.plan/04-SCREENS.md` (Steps 4.1-4.8) | Components only: UrlImage, GameCard, GameGrid, HeroBanner, SearchField, EmptyState, SkeletonCard |
-| 4b | `.plan/04-SCREENS.md` (Steps 4.9-4.11) | Screens: LoginScreen, HomeScreen, LibraryScreen |
-| 4c | `.plan/04-SCREENS.md` (Steps 4.12-4.14 + expansions) | Settings + GameDetails + Store: SettingsComponents, SettingsScreen, GameDetailsSheet, StoreComponents, TvDeviceLogin, Accent migration |
-| 5 | `.plan/05-STREAM.md` | Stream: StreamControls, StreamScreen, queue UI, touch controls |
-| 6 | `.plan/06-POLISH.md` | Polish: animations, recomposition, stability |
-| 7 | `.plan/07-CLEANUP.md` | Cleanup: delete old file, update references |
+| # | File | Goal |
+|---|------|------|
+| 1 | `01-THEME.md` | Extract theme |
+| 2 | `02-DEPENDENCIES.md` | Add Coil 3 + Navigation Compose |
+| 3 | `03-NAVIGATION.md` | Routes, NavBar, AppNavigation |
+| 4 | `04-SCREENS.md` | Extract Login, Home, Library, Settings |
+| 5 | `05-STREAM.md` | Move stream + rewrite overlay |
+| 6 | `06-CLEANUP.md` | Delete remnants |
 
-> **Phase 4 is split into 3 sub-phases** to keep each orchestrator under 10k tokens.
->
-> When spawning Phase 4 orchestrators, pass these step ranges:
-> - **4a:** Steps 4.1-4.8 (components only)
-> - **4b:** Steps 4.9-4.11 (LoginScreen, HomeScreen, LibraryScreen)
-> - **4c:** Steps 4.12-4.14 + all expansion sections (SettingsScreen, GameDetailsSheet, StoreComponents, TvDeviceLogin, Accent migration)
-
-## Build Verification (CI Only)
-
-**No local builds.** Builds happen on GitHub Actions only.
-
-After each phase completes, the main orchestrator does:
-
-1. **Static checks only** — verify file structure, imports, and type references are correct
-2. **Commit the phase** — push to trigger CI
-3. **Wait for CI result** — check GitHub Actions for build status
-4. **If CI fails:**
-   a. Read the error output from CI (last 100 lines shown in summary)
-   b. Fix the issue (usually missing imports, wrong API, or typos)
-   c. Commit and push again
-   d. Only proceed to next phase after CI passes
-
-### Static Verification (No Build Required)
-
-Before committing each phase, verify:
-
-- [ ] All new files exist at the correct paths
-- [ ] All imports reference types that exist in `Models.kt` or standard libraries
-- [ ] All composable function signatures match the plan
-- [ ] No references to deleted/renamed types
-- [ ] `package` declarations match directory structure
-- [ ] LSP diagnostics show no errors (if `kotlin-ls` is available)
-
-### GitHub Actions Workflow
+## Integration Check (After Every Phase)
 
 ```bash
-# After phase completes, commit and push
-git add -A
-git commit -m "Phase N: [phase name]"
-git push
+# 1. No orphaned imports — check each file compiles conceptually
+rg -l "import com.opencloudgaming.opennow" app/src/main/java/com/opencloudgaming/opennow/ui/ | while read f; do
+  rg "import" "$f" | while read line; do
+    file=$(echo "$line" | grep -oP 'import\s+\K[^\s]+' | tr '.' '/')
+    # Check if the imported symbol exists in the target file
+  done
+done
 
-# Watch CI until it finishes (blocks until done)
-gh run watch
+# 2. All ViewModel methods called from UI exist
+rg "viewModel\.\w+|viewModel::\w+" app/src/main/java/com/opencloudgaming/opennow/ui/ -o --no-filename | sort -u
 
-# If it failed, get the error logs
-gh run view --log-failed
+# 3. All routes have destinations (if Phase 3+)
+rg "composable<" app/src/main/java/com/opencloudgaming/opennow/ui/navigation/AppNavigation.kt
+
+# 4. No duplicate function definitions
+rg "^fun |^private fun " app/src/main/java/ --no-filename | sort | uniq -d
+
+# 5. No local build artifacts
+ls app/build/ 2>/dev/null && echo "WARNING: local build exists"
 ```
 
-**The main orchestrator must run `gh run watch` after every push.** This blocks until CI finishes. If it fails, run `gh run view --log-failed` to get the exact error, then fix and retry.
+## CI Workflow
 
-## Critical Rules
+```bash
+git add -A && git commit -m "Phase N: [name]" && git push
+gh run watch  # MUST show BUILD SUCCESSFUL
+# If fails: gh run view --log-failed → fix → retry
+```
 
-1. **NEVER run build commands locally** — all builds via GitHub Actions
-2. **One subagent per file** — don't bundle multiple files in one subagent
-3. **Wait for each step** — phases are sequential within themselves
-4. **Phases are sequential** — don't start Phase 2 until Phase 1 CI passes
-5. **Read skills before each phase** — the phase plan lists which skills to read
-6. **Verify against Models.kt** — if a plan references a type, confirm it exists before creating code
-7. **Commit after each phase** — one commit per phase for clean CI history
+## Rules Summary
+
+| Rule | Enforcement |
+|------|-------------|
+| Use MCP tools | Every subagent prompt includes this instruction |
+| No local builds | Every phase plan has explicit "DO NOT BUILD" |
+| YAGNI | Every phase plan has "YAGNI checklist" |
+| KISS | Every phase plan has "KISS checklist" |
+| Verify after write | Every phase plan has grep commands |
+| CI only | Every phase ends with `gh run watch` |

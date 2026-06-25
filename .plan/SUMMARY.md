@@ -1,132 +1,95 @@
 # UI Rewrite — Quick Reference
 
-## Workflow
+## Decisions
 
-```
-Phase N:
-  1. Read skills (compose-*, material-3, kotlin-*)
-  2. Verify ALL APIs via MCP before writing code
-  3. Create files via subagents
-  4. INTEGRATION CHECK: verify all callbacks/routes/params connect
-  5. Commit → Push → gh run watch → CI passes?
-  6. If fails: read errors → fix → retry
-  7. Only proceed after CI passes AND integration check passes
-```
-
-## CRITICAL RULES
-
-### API Verification (MANDATORY)
-Before writing ANY code in a sub-agent prompt, you MUST:
-1. Use `android-docs_search_android_docs` to find the correct API
-2. Use `android-docs_get_api_reference` to get exact method signatures
-3. Include the verified signature in the sub-agent prompt
-4. NEVER assume an API exists — always verify first
-
-### Integration Check (MANDATORY after every phase)
-After creating files, verify:
-1. **Every composable called from AppNavigation has matching parameters** — read the screen file, check the function signature, check the call site
-2. **Every ViewModel method called from UI exists** — grep for `viewModel.xxx()` and verify `xxx()` exists in ViewModel
-3. **Every navigation route has a composable destination** — check Route sealed interface vs NavHost destinations
-4. **Every imported symbol resolves** — no missing imports
-5. **No orphaned components** — if you create a component, it MUST be called somewhere
-
-### Sub-Agent Prompt Requirements
-Every sub-agent prompt MUST include:
-1. The exact file path to create/edit
-2. The verified API signatures (from MCP)
-3. The exact parameters expected (from reading the calling code)
-4. A list of imports that MUST be present
-5. An explicit instruction: "Do NOT use APIs without verifying them first via MCP"
-
-## Rules
-
-- **NO local builds** — all builds via GitHub Actions
-- **One phase at a time** — wait for CI before next phase
-- **One subagent per file** — don't bundle multiple files
-- **Read skills before each phase** — listed in each phase file
-- **NEVER skip integration check** — this is what caused the last failure
+| Decision | Choice | Why |
+|----------|--------|-----|
+| State pattern | Keep `(state: OpenNowUiState, viewModel: OpenNowViewModel)` | Copy-paste friendly, zero rewiring |
+| Theme | Keep existing colors (#090B0D, #11161A, #8AB4F8) | Already works, dark mode |
+| Navigation | Bottom bar (phone) + NavRail (tablet) + Type-safe routes | User choice |
+| Tabs | Store, Library, Settings | Same as current |
+| Image loading | Coil 3 (`coil3.compose.AsyncImage`) | Better than BitmapFactory |
+| Settings | Keep category tabs | Same UX, just extracted |
+| Stream | Compact overlay on back press only | User requirement: "doesn't block what player sees" |
+| Stream controls | FPS slider, mouse sensitivity, touch toggle, disconnect, stats | Only real-time configurable items |
+| Function signatures | Keep `(state, viewModel)` pattern | Lowest risk, vibecoding optimized |
+| Build | CI/CD only, no local builds | User's workflow |
 
 ## Phases
 
-| # | File | Goal | Integration Check |
-|---|------|------|-------------------|
-| 1 | `.plan/01-THEME.md` | Colors, typography, shapes, motion, theme | Verify theme params match M3 API |
-| 2 | `.plan/02-STATE.md` | AppState, AuthState, CatalogState, etc. | Verify state bridge maps correct legacy fields |
-| 3 | `.plan/03-NAVIGATION.md` | Routes, bars, scaffold, AppNavigation | Verify ALL routes have destinations, ALL callbacks wired |
-| 4a | `.plan/04-SCREENS.md` (4.1-4.8) | Components: UrlImage, GameCard, GameGrid, etc. | Verify each component is used in a screen |
-| 4b | `.plan/04-SCREENS.md` (4.9-4.11) | LoginScreen, HomeScreen, LibraryScreen | Verify params match AppNavigation call sites |
-| 4c | `.plan/04-SCREENS.md` (4.12+) | SettingsScreen, GameDetailsSheet | Verify params match AppNavigation call sites |
-| 5 | `.plan/05-STREAM.md` | StreamControls, StreamScreen, queue UI | Verify NativeStreamClient wiring, verify all APIs |
-| 6 | `.plan/06-POLISH.md` | Animations, recomposition, stability | Verify all animations use correct APIs |
-| 7 | `.plan/07-CLEANUP.md` | Delete old file, update references | Verify NO references to deleted code remain |
+| # | File | Goal | Risk |
+|---|------|------|------|
+| 1 | `01-THEME.md` | Extract theme to `ui/theme/Theme.kt` | Zero |
+| 2 | `02-DEPENDENCIES.md` | Add Coil 3 + Navigation Compose | Low |
+| 3 | `03-NAVIGATION.md` | Routes, NavBar, NavRail, AppNavigation | Medium |
+| 4 | `04-SCREENS.md` | Extract Login, Home, Library, Settings | Low |
+| 5 | `05-STREAM.md` | Move stream + rewrite overlay shell | High |
+| 6 | `06-CLEANUP.md` | Delete remnants, verify | Zero |
 
-## Tools Available
+## YAGNI Rules
 
-| Tool | Purpose | When |
-|------|---------|------|
-| MCP (android-docs) | Verify API signatures | **BEFORE writing code — MANDATORY** |
-| CI (./gradlew) | Compilation checking | **AFTER writing code — MANDATORY** |
-| Skills | Patterns/anti-patterns | Before each phase (at `~/.agents/skills/`) |
+1. **No generic components** — if used once, inline it
+2. **No adaptive scaffold** — phone + nav rail only
+3. **No Motion.kt** — use `200f` literals
+4. **No empty state components** — inline `Text("No games")`
+5. **No skeleton card** — inline placeholder Box
+6. **No bridge state layer** — keep `(state, viewModel)` pattern
+7. **No reusable components used once** — inline if single use
+8. **No comments unless asked** — code should be self-documenting
+
+## New File Structure
+
+```
+app/src/main/java/com/opencloudgaming/opennow/
+├── OpenNowScreens.kt          # Shrunk: only OpenNowApp + MainShell + TopStatusBar
+├── OpenNowViewModel.kt        # Unchanged
+├── GfnApi.kt                  # Unchanged
+├── Streaming.kt                # Unchanged
+├── Models.kt                   # Unchanged
+├── Persistence.kt              # Unchanged
+├── MainActivity.kt             # Updated: uses AppNavigation
+├── QrCode.kt                   # Unchanged
+└── ui/
+    ├── theme/
+    │   └── Theme.kt           # NEW: colors, UiAccent.color, OpenNowTheme
+    ├── navigation/
+    │   ├── Routes.kt          # NEW: @Serializable route objects
+    │   ├── NavBar.kt          # NEW: BottomBar + NavRail
+    │   └── AppNavigation.kt   # NEW: NavHost + Scaffold + overlay orchestration
+    ├── screens/
+    │   ├── login/
+    │   │   └── LoginScreen.kt      # NEW: Login, TvDeviceLogin, DeviceLoginPanel, etc.
+    │   ├── home/
+    │   │   └── HomeScreen.kt       # NEW: HomeScreen, GameCard, GameDetailsSheet, etc.
+    │   ├── library/
+    │   │   └── LibraryScreen.kt    # NEW: LibraryScreen, ActiveSessionResumeCard
+    │   ├── settings/
+    │   │   └── SettingsScreen.kt   # NEW: SettingsScreen, all settings panels
+    │   └── stream/
+    │       └── StreamScreen.kt     # NEW: StreamScreen + all stream composables
+    └── components/
+        └── UrlImage.kt        # NEW: Coil 3 wrapper
+```
 
 ## CI Workflow
 
 ```bash
-git add -A
-git commit -m "Phase N: [name]"
-git push
-gh run watch  # Wait for CI — MUST show BUILD SUCCESSFUL
+git add -A && git commit -m "Phase N: [name]" && git push
+gh run watch  # MUST show BUILD SUCCESSFUL
 # If fails: gh run view --log-failed → fix → retry
-# NEVER proceed if CI fails
 ```
-
-## Error Handling
-
-1. CI fails → read last 100 lines from summary
-2. Common issues: missing imports, wrong API, typos, wrong parameter names
-3. Fix → commit → push → watch again
-4. Only proceed after CI passes AND integration check passes
 
 ## Key Files (Don't Modify)
 
 - `GfnApi.kt` — API calls
-- `Streaming.kt` — WebRTC + input (reference only — do NOT rewrite)
+- `Streaming.kt` — WebRTC + input
 - `Models.kt` — data classes
 - `Persistence.kt` — storage
 - `QrCode.kt` — QR generation
 
 ## Key Files (Will Modify)
 
-- `OpenNowViewModel.kt` — add appState, bridge code
-- `MainActivity.kt` — update theme + navigation
-- `OpenNowScreens.kt` — delete at end
-
-## Integration Checklist (Run After Every Phase)
-
-```bash
-# 1. Check all ViewModel methods called from UI exist
-grep -rn "viewModel\." app/src/main/java/com/opencloudgaming/opennow/ui/ | grep -oP 'viewModel\.\w+' | sort -u
-
-# 2. Check all routes have destinations
-grep -rn "Route\." app/src/main/java/com/opencloudgaming/opennow/ui/navigation/AppNavigation.kt | grep "composable<"
-
-# 3. Check all imports resolve (no red squiggly in IDE)
-# 4. Check no orphaned components (every created file is imported somewhere)
-# 5. Check all callback parameters match between call site and definition
-```
-
-## Start
-
-### Pre-requisites (do before executing)
-
-1. Commit current changes:
-```bash
-git add -A
-git commit -m "Add UI rewrite plan, MCP/LSP config, CI error capture"
-git push
-```
-
-2. Verify CI passes (green checkmark on GitHub)
-
-### Execute
-
-Read this file → Read `.plan/00-CONTEXT.md` → Read `.plan/01-THEME.md` → Execute Phase 1
+- `OpenNowViewModel.kt` — NO CHANGES (keep existing state pattern)
+- `MainActivity.kt` — Update setContent to use AppNavigation
+- `OpenNowScreens.kt` — Delete extracted code, keep orchestration
+- `app/build.gradle.kts` — Add 3 dependencies

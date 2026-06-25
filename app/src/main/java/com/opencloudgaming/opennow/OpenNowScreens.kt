@@ -199,6 +199,7 @@ import com.opencloudgaming.opennow.ui.theme.SettingsTextMuted
 import com.opencloudgaming.opennow.ui.theme.color
 import com.opencloudgaming.opennow.ui.theme.uiAccentLabel
 import com.opencloudgaming.opennow.ui.theme.PhoneNavRailMaxSmallestWidth
+import com.opencloudgaming.opennow.ui.theme.Green
 
 private data class SettingsChoiceOption(val value: String, val label: String)
 private data class ChoiceMenuOption(

@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.opencloudgaming.opennow.AppSettings
 import com.opencloudgaming.opennow.UiAccent
+import androidx.compose.ui.unit.dp
 
 private val Green = Color(0xff6af0a0)
 val Background = Color(0xff090b0d)
@@ -46,6 +47,7 @@ val SettingsPanel = Color(0xff11161a)
 val SettingsPanelAlt = Color(0xff171d22)
 val SettingsText = Color(0xffeef3f5)
 val SettingsTextMuted = Color(0xff98a4aa)
+val PhoneNavRailMaxSmallestWidth = 600.dp
 ```
 
 2. **UiAccent.color extension** (lines 268-276):

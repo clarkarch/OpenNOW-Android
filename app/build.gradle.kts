@@ -87,6 +87,9 @@ dependencies {
     implementation("androidx.media3:media3-common:1.9.0")
     implementation("androidx.media3:media3-exoplayer:1.9.0")
     implementation("androidx.media3:media3-ui:1.9.0")
+    implementation("androidx.navigation:navigation-compose:2.9.8")
+    implementation("io.coil-kt.coil3:coil-compose:3.5.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.5.0")
 
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.squareup.okhttp3:okhttp-dnsoverhttps:4.12.0")
@@ -102,4 +105,13 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.7.0")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib") {
+            version {
+                strictly("[2.2.0, 2.3.0[")
+            }
+            because("kotlin-stdlib 2.4.0 is incompatible with Kotlin compiler 2.2.0")
+        }
+    }
 }

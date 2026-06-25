@@ -35,6 +35,15 @@ android-docs_get_api_reference("androidx.compose.material3.ExposedDropdownMenuBo
 - **ALL** builds go through CI: `git push → gh run watch`
 - If you need to verify something, use grep/read tools, not build commands
 
+### Rule 2b: Use Simple `gh` Commands Only
+
+- **USE:** `gh run list` — list recent runs
+- **USE:** `gh run watch <id>` — watch a running build
+- **USE:** `gh run view <id> --log-failed` — see what failed
+- **NEVER USE:** `gh api` — too complex, error-prone, unnecessary
+- **NEVER USE:** `gh run view` with custom jq queries
+- **NEVER USE:** `gh api repos/...` — stick to simple `gh` CLI
+
 ### Rule 3: ALWAYS Verify Before Writing
 
 For EVERY file the subagent creates:

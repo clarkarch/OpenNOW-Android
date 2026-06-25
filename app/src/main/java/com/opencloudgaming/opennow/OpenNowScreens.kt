@@ -202,7 +202,8 @@ import com.opencloudgaming.opennow.ui.screens.home.gameMatchesSearch
 import com.opencloudgaming.opennow.ui.screens.library.LibraryScreen
 import com.opencloudgaming.opennow.ui.screens.login.LoginScreen
 import com.opencloudgaming.opennow.ui.screens.settings.SettingsScreen
-import com.opencloudgaming.opennow.ui.screens.settings.StreamStatsStyle.label
+import com.opencloudgaming.opennow.StreamStatsStyle
+import com.opencloudgaming.opennow.ui.screens.settings.label
 import com.opencloudgaming.opennow.ui.screens.settings.next
 
 @Composable

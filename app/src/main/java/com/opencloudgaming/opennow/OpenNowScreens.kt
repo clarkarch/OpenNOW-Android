@@ -284,7 +284,7 @@ fun OpenNowApp(viewModel: OpenNowViewModel) {
 }
 
 @Composable
-private fun LoadingScreen(text: String) {
+internal fun LoadingScreen(text: String) {
     Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(16.dp)) {
             OpenNowMark(72.dp)
@@ -295,7 +295,7 @@ private fun LoadingScreen(text: String) {
 }
 
 @Composable
-private fun LoginScreen(state: OpenNowUiState, viewModel: OpenNowViewModel) {
+internal fun LoginScreen(state: OpenNowUiState, viewModel: OpenNowViewModel) {
     val signInFocusRequester = remember { FocusRequester() }
     val tvLogin = state.codecReport?.androidTvProfile == true
     val deviceCodeLoginAvailable = state.selectedProvider.supportsDeviceCodeLogin
@@ -581,10 +581,10 @@ private fun QrCodeView(qrCode: QrCode, modifier: Modifier = Modifier) {
 private fun secondsUntil(deadlineMs: Long): Int =
     ((deadlineMs - System.currentTimeMillis()).coerceAtLeast(0L) / 1000L).toInt()
 
-private fun isPhoneLandscape(width: androidx.compose.ui.unit.Dp, height: androidx.compose.ui.unit.Dp): Boolean =
+internal fun isPhoneLandscape(width: androidx.compose.ui.unit.Dp, height: androidx.compose.ui.unit.Dp): Boolean =
     width > height && minOf(width, height) < PhoneNavRailMaxSmallestWidth
 
-private fun isPhonePortrait(width: androidx.compose.ui.unit.Dp, height: androidx.compose.ui.unit.Dp): Boolean =
+internal fun isPhonePortrait(width: androidx.compose.ui.unit.Dp, height: androidx.compose.ui.unit.Dp): Boolean =
     height >= width && minOf(width, height) < PhoneNavRailMaxSmallestWidth
 
 @Composable
@@ -801,7 +801,7 @@ private fun RowScope.BottomNavItem(selected: Boolean, onClick: () -> Unit, iconR
 }
 
 @Composable
-private fun TopStatusBar(
+internal fun TopStatusBar(
     state: OpenNowUiState,
     onResumeActiveSession: () -> Unit,
     landscapeSearchQuery: String? = null,
@@ -985,7 +985,7 @@ private fun isTvActivateKey(event: androidx.compose.ui.input.key.KeyEvent): Bool
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun HomeScreen(
+internal fun HomeScreen(
     state: OpenNowUiState,
     viewModel: OpenNowViewModel,
     tvProfile: Boolean,
@@ -1147,7 +1147,7 @@ private fun StoreScrollActionButton(iconRes: Int, contentDescription: String, on
 }
 
 @Composable
-private fun LibraryScreen(
+internal fun LibraryScreen(
     state: OpenNowUiState,
     viewModel: OpenNowViewModel,
     tvProfile: Boolean,
@@ -1777,7 +1777,7 @@ private fun AnimatedLaunchOverlay(modifier: Modifier = Modifier, content: @Compo
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun GameDetailsSheet(
+internal fun GameDetailsSheet(
     game: GameInfo,
     favorite: Boolean,
     defaultVariantId: String?,
@@ -2516,7 +2516,7 @@ private fun StoreLaunchSelector(
 }
 
 @Composable
-private fun SettingsScreen(state: OpenNowUiState, viewModel: OpenNowViewModel, tvProfile: Boolean) {
+internal fun SettingsScreen(state: OpenNowUiState, viewModel: OpenNowViewModel, tvProfile: Boolean) {
     var showSessionProxyWarning by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
     val focusManager = LocalFocusManager.current
@@ -3092,7 +3092,7 @@ private fun DebugLogsPanel(state: OpenNowUiState, viewModel: OpenNowViewModel) {
 }
 
 @Composable
-private fun StreamScreen(state: OpenNowUiState, viewModel: OpenNowViewModel) {
+internal fun StreamScreen(state: OpenNowUiState, viewModel: OpenNowViewModel) {
     val context = LocalContext.current
     val activity = context as? Activity
     val session = state.streamSession

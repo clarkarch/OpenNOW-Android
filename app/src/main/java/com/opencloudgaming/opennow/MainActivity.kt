@@ -20,6 +20,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.opencloudgaming.opennow.ui.navigation.AppNavigation
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -39,7 +40,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            OpenNowApp(viewModel)
+            AppNavigation(viewModel = viewModel)
         }
         lifecycleScope.launch {
             viewModel.state.collect { state ->

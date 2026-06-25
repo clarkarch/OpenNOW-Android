@@ -65,7 +65,6 @@ import com.opencloudgaming.opennow.AuthSession
 import com.opencloudgaming.opennow.BuildConfig
 import com.opencloudgaming.opennow.CodecCapability
 import com.opencloudgaming.opennow.ColorQuality
-import com.opencloudgaming.opennow.ColorQuality.label
 import com.opencloudgaming.opennow.OpenNowUiState
 import com.opencloudgaming.opennow.OpenNowViewModel
 import com.opencloudgaming.opennow.R
@@ -639,6 +638,14 @@ internal fun CodecCapabilityRow(capability: CodecCapability) {
 }
 
 internal fun yesNo(value: Boolean): String = if (value) "yes" else "no"
+
+internal val ColorQuality.label: String
+    get() = when (this) {
+        ColorQuality.EightBit420 -> "8-bit 4:2:0"
+        ColorQuality.EightBit444 -> "8-bit 4:4:4"
+        ColorQuality.TenBit420 -> "10-bit 4:2:0"
+        ColorQuality.TenBit444 -> "10-bit 4:4:4"
+    }
 
 internal val StreamStatsStyle.label: String
     get() = when (this) {

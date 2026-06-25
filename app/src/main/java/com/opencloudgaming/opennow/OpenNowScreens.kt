@@ -202,7 +202,7 @@ import com.opencloudgaming.opennow.ui.screens.home.gameMatchesSearch
 import com.opencloudgaming.opennow.ui.screens.library.LibraryScreen
 import com.opencloudgaming.opennow.ui.screens.login.LoginScreen
 import com.opencloudgaming.opennow.ui.screens.settings.SettingsScreen
-import com.opencloudgaming.opennow.ui.screens.settings.label
+import com.opencloudgaming.opennow.ui.screens.settings.StreamStatsStyle.label
 import com.opencloudgaming.opennow.ui.screens.settings.next
 
 @Composable
@@ -2883,10 +2883,4 @@ internal fun OpenNowMark(size: androidx.compose.ui.unit.Dp) {
     )
 }
 
-internal val ColorQuality.label: String
-    get() = when (this) {
-        ColorQuality.EightBit420 -> "8-bit 4:2:0"
-        ColorQuality.EightBit444 -> "8-bit 4:4:4"
-        ColorQuality.TenBit420 -> "10-bit 4:2:0"
-        ColorQuality.TenBit444 -> "10-bit 4:4:4"
-    }
+

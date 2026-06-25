@@ -11,7 +11,7 @@ import com.opencloudgaming.opennow.AppSettings
 import com.opencloudgaming.opennow.UiAccent
 import androidx.compose.ui.unit.dp
 
-private val Green = Color(0xff6af0a0)
+val Green = Color(0xff6af0a0)
 val Background = Color(0xff090b0d)
 val Panel = Color(0xff11161a)
 val PanelAlt = Color(0xff171d22)

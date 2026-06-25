@@ -87,6 +87,9 @@ dependencies {
     implementation("androidx.media3:media3-common:1.9.0")
     implementation("androidx.media3:media3-exoplayer:1.9.0")
     implementation("androidx.media3:media3-ui:1.9.0")
+    implementation("androidx.navigation:navigation-compose:2.9.8")
+    implementation("io.coil-kt.coil3:coil-compose:3.5.0")
+    implementation("io.coil-kt.coil3:coil-network-okhttp:3.5.0")
 
     implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
     implementation("com.squareup.okhttp3:okhttp-dnsoverhttps:4.12.0")

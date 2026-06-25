@@ -6,7 +6,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
@@ -63,6 +65,7 @@ import com.opencloudgaming.opennow.AuthSession
 import com.opencloudgaming.opennow.BuildConfig
 import com.opencloudgaming.opennow.CodecCapability
 import com.opencloudgaming.opennow.ColorQuality
+import com.opencloudgaming.opennow.ColorQuality.label
 import com.opencloudgaming.opennow.OpenNowUiState
 import com.opencloudgaming.opennow.OpenNowViewModel
 import com.opencloudgaming.opennow.R
@@ -76,6 +79,10 @@ import com.opencloudgaming.opennow.isTvActivateKey
 import com.opencloudgaming.opennow.normalizeStreamResolutionForAspect
 import com.opencloudgaming.opennow.streamAspectRatioOptions
 import com.opencloudgaming.opennow.streamResolutionChoicesForAspect
+import com.opencloudgaming.opennow.streamingDecoderAvailable
+import com.opencloudgaming.opennow.streamingDecoderName
+import com.opencloudgaming.opennow.streamingHardwareDecoderAvailable
+import com.opencloudgaming.opennow.streamingRealtimeSafe
 import com.opencloudgaming.opennow.ui.theme.SettingsBackground
 import com.opencloudgaming.opennow.ui.theme.SettingsPanel
 import com.opencloudgaming.opennow.ui.theme.SettingsPanelAlt

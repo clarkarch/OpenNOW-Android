@@ -65,7 +65,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableTransitionState
+import android.widget.Toast
+import androidx.compose.animation.core.MutableTransitionState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -107,7 +108,8 @@ import com.opencloudgaming.opennow.GameVariant
 import com.opencloudgaming.opennow.OpenNowUiState
 import com.opencloudgaming.opennow.OpenNowViewModel
 import com.opencloudgaming.opennow.R
-import com.opencloudgaming.opennow.ActiveSessionResumeCard
+import com.opencloudgaming.opennow.CatalogSortOption
+import com.opencloudgaming.opennow.ui.screens.library.ActiveSessionResumeCard
 import com.opencloudgaming.opennow.NativeSearchField
 import com.opencloudgaming.opennow.displayStoresForVariants
 import com.opencloudgaming.opennow.gameStoreDisplayName

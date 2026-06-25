@@ -199,7 +199,11 @@ import com.opencloudgaming.opennow.ui.screens.home.SearchEmptyState
 import com.opencloudgaming.opennow.ui.screens.home.StoreLaunchSelector
 import com.opencloudgaming.opennow.ui.screens.home.SwipeToRefreshContainer
 import com.opencloudgaming.opennow.ui.screens.home.gameMatchesSearch
+import com.opencloudgaming.opennow.ui.screens.library.LibraryScreen
+import com.opencloudgaming.opennow.ui.screens.login.LoginScreen
 import com.opencloudgaming.opennow.ui.screens.settings.SettingsScreen
+import com.opencloudgaming.opennow.ui.screens.settings.label
+import com.opencloudgaming.opennow.ui.screens.settings.next
 
 @Composable
 fun OpenNowApp(viewModel: OpenNowViewModel) {
@@ -2879,7 +2883,7 @@ internal fun OpenNowMark(size: androidx.compose.ui.unit.Dp) {
     )
 }
 
-private val ColorQuality.label: String
+internal val ColorQuality.label: String
     get() = when (this) {
         ColorQuality.EightBit420 -> "8-bit 4:2:0"
         ColorQuality.EightBit444 -> "8-bit 4:4:4"

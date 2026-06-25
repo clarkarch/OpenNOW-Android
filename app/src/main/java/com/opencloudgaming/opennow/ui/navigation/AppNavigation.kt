@@ -33,7 +33,7 @@ import com.opencloudgaming.opennow.isPhoneLandscape
 import com.opencloudgaming.opennow.ui.screens.home.GameDetailsSheet
 import com.opencloudgaming.opennow.ui.screens.home.HomeScreen
 import com.opencloudgaming.opennow.ui.screens.library.LibraryScreen
-import com.opencloudgaming.opennow.ui.screens.login.LoadingScreen
+import com.opencloudgaming.opennow.LoadingScreen
 import com.opencloudgaming.opennow.ui.screens.login.LoginScreen
 import com.opencloudgaming.opennow.ui.screens.settings.SettingsScreen
 

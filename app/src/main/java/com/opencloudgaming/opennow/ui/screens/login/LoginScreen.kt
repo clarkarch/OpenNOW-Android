@@ -52,6 +52,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.opencloudgaming.opennow.DeviceLoginPrompt
 import com.opencloudgaming.opennow.LoginProvider
+import com.opencloudgaming.opennow.supportsDeviceCodeLogin
 import com.opencloudgaming.opennow.OpenNowMark
 import com.opencloudgaming.opennow.OpenNowUiState
 import com.opencloudgaming.opennow.OpenNowViewModel

@@ -26,16 +26,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.opencloudgaming.opennow.AppPage
-import com.opencloudgaming.opennow.GameDetailsSheet
-import com.opencloudgaming.opennow.HomeScreen
-import com.opencloudgaming.opennow.LibraryScreen
-import com.opencloudgaming.opennow.LoadingScreen
-import com.opencloudgaming.opennow.LoginScreen
 import com.opencloudgaming.opennow.OpenNowViewModel
 import com.opencloudgaming.opennow.R
-import com.opencloudgaming.opennow.SettingsScreen
 import com.opencloudgaming.opennow.StreamScreen
 import com.opencloudgaming.opennow.isPhoneLandscape
+import com.opencloudgaming.opennow.ui.screens.home.GameDetailsSheet
+import com.opencloudgaming.opennow.ui.screens.home.HomeScreen
+import com.opencloudgaming.opennow.ui.screens.library.LibraryScreen
+import com.opencloudgaming.opennow.ui.screens.login.LoadingScreen
+import com.opencloudgaming.opennow.ui.screens.login.LoginScreen
+import com.opencloudgaming.opennow.ui.screens.settings.SettingsScreen
 
 @Composable
 fun AppNavigation(viewModel: OpenNowViewModel) {

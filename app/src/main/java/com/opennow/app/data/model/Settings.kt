@@ -1,6 +1,5 @@
 package com.opennow.app.data.model
 
-@Serializable
 data class AppSettings(
     val resolution: String = "1920x1080",
     val fps: Int = 60,

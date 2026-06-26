@@ -35,7 +35,6 @@ fun StreamScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0xFF1A1A2E)),
-            contentAlignment = Alignment.Center,
         )
 
         StatsBar(

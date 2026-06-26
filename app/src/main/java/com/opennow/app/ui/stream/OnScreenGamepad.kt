@@ -11,13 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -53,19 +47,19 @@ fun OnScreenGamepad(
 @Composable
 private fun DPad(onButtonPress: (String) -> Unit) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        DPadButton(Icons.Filled.KeyboardArrowUp, "UP", onButtonPress)
+        DPadButton("\u25B2", "UP", onButtonPress)
         Row {
-            DPadButton(Icons.Filled.KeyboardArrowLeft, "LEFT", onButtonPress)
+            DPadButton("\u25C0", "LEFT", onButtonPress)
             Box(modifier = Modifier.size(40.dp))
-            DPadButton(Icons.Filled.KeyboardArrowRight, "RIGHT", onButtonPress)
+            DPadButton("\u25B6", "RIGHT", onButtonPress)
         }
-        DPadButton(Icons.Filled.KeyboardArrowDown, "DOWN", onButtonPress)
+        DPadButton("\u25BC", "DOWN", onButtonPress)
     }
 }
 
 @Composable
 private fun DPadButton(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    text: String,
     label: String,
     onPress: (String) -> Unit,
 ) {
@@ -76,7 +70,7 @@ private fun DPadButton(
             containerColor = Color.White.copy(alpha = 0.2f),
         ),
     ) {
-        Icon(icon, contentDescription = label, tint = Color.White, modifier = Modifier.size(24.dp))
+        Text(text, color = Color.White, fontSize = 16.sp)
     }
 }
 

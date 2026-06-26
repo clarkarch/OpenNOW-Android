@@ -9,13 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.MusicNote
-import androidx.compose.material.icons.filled.MusicOff
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,7 +45,7 @@ fun StreamControls(
                     containerColor = Color.Red,
                 ),
             ) {
-                Icon(Icons.Filled.Close, contentDescription = "Stop", tint = Color.White)
+                Text("\u2715", color = Color.White, fontSize = 20.sp)
             }
             Text("Stop", color = Color.White, fontSize = 12.sp)
 
@@ -65,10 +59,10 @@ fun StreamControls(
                     containerColor = Color.DarkGray,
                 ),
             ) {
-                Icon(
-                    if (isMuted) Icons.Filled.MusicOff else Icons.Filled.MusicNote,
-                    contentDescription = "Mute",
-                    tint = Color.White,
+                Text(
+                    if (isMuted) "\uD83D\uDD07" else "\uD83D\uDD0A",
+                    color = Color.White,
+                    fontSize = 20.sp,
                 )
             }
             Text("Mute", color = Color.White, fontSize = 12.sp)
@@ -80,7 +74,7 @@ fun StreamControls(
                     containerColor = Color.DarkGray,
                 ),
             ) {
-                Icon(Icons.Filled.Settings, contentDescription = "Settings", tint = Color.White)
+                Text("\u2699", color = Color.White, fontSize = 20.sp)
             }
             Text("Settings", color = Color.White, fontSize = 12.sp)
 

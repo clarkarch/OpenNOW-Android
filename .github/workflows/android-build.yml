@@ -6,10 +6,12 @@ on:
     branches:
       - main
       - dev
+      - fresh-start
   push:
     branches:
       - main
       - dev
+      - fresh-start
 
 concurrency:
   group: android-${{ github.ref }}

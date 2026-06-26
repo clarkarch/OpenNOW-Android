@@ -76,7 +76,7 @@ fun LibraryScreen(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = "OpenNOW",
+                text = "OpenNext",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
             )

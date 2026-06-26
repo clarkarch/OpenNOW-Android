@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.OpenNOW" parent="android:Theme.Material.NoActionBar" />
+    <style name="Theme.OpenNOW" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">#0D1117</item>
+        <item name="android:statusBarColor">#0D1117</item>
+        <item name="android:navigationBarColor">#0D1117</item>
+    </style>
 </resources>

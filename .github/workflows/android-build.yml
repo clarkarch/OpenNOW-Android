@@ -1,4 +1,4 @@
-name: android
+name: opennext
 
 on:
   workflow_dispatch:
@@ -54,7 +54,7 @@ jobs:
       - name: Upload debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: opennow-debug
+          name: opennext-debug
           path: app/build/outputs/apk/debug/*.apk
           if-no-files-found: warn
 

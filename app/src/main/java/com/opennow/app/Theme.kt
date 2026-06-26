@@ -5,27 +5,17 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-private val BlueAccent = Color(0xFF1E88E5)
-private val DarkBackground = Color(0xFF0D1117)
-private val DarkSurface = Color(0xFF161B22)
-private val DarkPanel = Color(0xFF21262D)
-private val DarkMuted = Color(0xFF8B949E)
-private val DarkError = Color(0xFFF85149)
-
 private val DarkColorScheme = darkColorScheme(
-    primary = BlueAccent,
+    primary = Color(0xFF1E88E5),
     onPrimary = Color.White,
-    background = DarkBackground,
-    surface = DarkSurface,
-    surfaceVariant = DarkPanel,
+    background = Color(0xFF0D1117),
+    surface = Color(0xFF161B22),
+    surfaceVariant = Color(0xFF21262D),
     onBackground = Color(0xFFE6EDF3),
     onSurface = Color(0xFFE6EDF3),
-    onSurfaceVariant = DarkMuted,
-    secondary = BlueAccent,
-    onSecondary = Color.White,
-    error = DarkError,
+    onSurfaceVariant = Color(0xFF8B949E),
+    error = Color(0xFFF85149),
     onError = Color.White,
-    outline = DarkMuted,
 )
 
 @Composable
